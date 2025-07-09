@@ -14,6 +14,9 @@ public class AppTrackerService
     private bool _isTracking = false;
 
     public int PollingIntervalSeconds { get; set; } = 30;
+    public bool IsTimeTrackingEnabled { get; set; } = false;
+    public TimeSpan StartTime { get; set; } = new(9, 0, 0); // 9:00 AM
+    public TimeSpan EndTime { get; set; } = new(17, 30, 0); // 5:30 PM
     
     public event EventHandler<UsageEntry>? NewEntryLogged;
     public event EventHandler<string>? StatusChanged;
@@ -73,6 +76,28 @@ public class AppTrackerService
     {
         try
         {
+            // Check if time-based tracking is enabled and if we are outside the allowed time range
+            if (IsTimeTrackingEnabled)
+            {
+                var now = DateTime.Now.TimeOfDay;
+                if (now < StartTime || now > EndTime)
+                {
+                    if (_isTracking)
+                    {
+                        StopTracking();
+                        StatusChanged?.Invoke(this, $"Tracking stopped (outside of scheduled time: {StartTime:hh:mm} - {EndTime:hh:mm})");
+                    }
+                    return;
+                }
+                else
+                {
+                    if (!_isTracking)
+                    {
+                        StartTracking();
+                    }
+                }
+            }
+
             var (windowTitle, processName, applicationName) = WindowsApiHelper.GetActiveWindowInfo();
             
             // Ignore empty or system windows

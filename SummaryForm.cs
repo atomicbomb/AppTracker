@@ -12,7 +12,16 @@ public partial class SummaryForm : Form
         _summaries = summaries;
         _date = date;
         InitializeComponent();
+        SetupTooltips();
         LoadSummaryData();
+    }
+
+    private void SetupTooltips()
+    {
+        var toolTip = new ToolTip();
+        toolTip.SetToolTip(btnPreviousDay, $"View summary for {_date.AddDays(-1):yyyy-MM-dd}");
+        toolTip.SetToolTip(btnNextDay, $"View summary for {_date.AddDays(1):yyyy-MM-dd}");
+        toolTip.SetToolTip(btnClose, "Close this summary window");
     }
 
     private void LoadSummaryData()
@@ -29,10 +38,18 @@ public partial class SummaryForm : Form
             var item = new ListViewItem(summary.ApplicationName);
             item.SubItems.Add(FormatTimeSpan(summary.TotalTime));
             item.SubItems.Add(summary.SessionCount.ToString());
-            item.SubItems.Add($"{(summary.TotalTime.TotalMinutes / 60 * 100):F1}%");
             
             listViewSummary.Items.Add(item);
             totalTime = totalTime.Add(summary.TotalTime);
+        }
+        
+        // Calculate percentages after we know the total time
+        for (int i = 0; i < _summaries.Count; i++)
+        {
+            var percentage = totalTime.TotalMinutes > 0 
+                ? (_summaries[i].TotalTime.TotalMinutes / totalTime.TotalMinutes * 100) 
+                : 0;
+            listViewSummary.Items[i].SubItems.Add($"{percentage:F1}%");
         }
         
         lblTotalTime.Text = $"Total tracked time: {FormatTimeSpan(totalTime)}";

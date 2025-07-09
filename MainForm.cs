@@ -137,11 +137,29 @@ public partial class MainForm : Form
 
     private async void ShowTodaysSummary(object? sender, EventArgs e)
     {
+        await ShowSummaryForDate(DateTime.Today);
+    }
+
+    private async Task ShowSummaryForDate(DateTime date)
+    {
         try
         {
-            var summary = await _appTracker.GetDailySummaryAsync(DateTime.Today);
-            using var summaryForm = new SummaryForm(summary, DateTime.Today);
-            summaryForm.ShowDialog(this);
+            DateTime currentDate = date;
+            DialogResult result;
+            
+            do
+            {
+                var summary = await _appTracker.GetDailySummaryAsync(currentDate);
+                using var summaryForm = new SummaryForm(summary, currentDate);
+                result = summaryForm.ShowDialog(this);
+                
+                // Check if user clicked Previous Day or Next Day
+                if (result == DialogResult.Retry && summaryForm.Tag is DateTime newDate)
+                {
+                    currentDate = newDate;
+                }
+            } 
+            while (result == DialogResult.Retry);
         }
         catch (Exception ex)
         {
@@ -167,6 +185,11 @@ public partial class MainForm : Form
             _appTracker?.Dispose();
         }
         base.Dispose(disposing);
+    }
+
+    public async Task ShowSummaryForSpecificDate(DateTime date)
+    {
+        await ShowSummaryForDate(date);
     }
 
     private void btnViewSummary_Click(object sender, EventArgs e)
