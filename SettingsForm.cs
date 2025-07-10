@@ -30,6 +30,9 @@ public partial class SettingsForm : Form
         _appTracker.EndTime = dtpEndTime.Value.TimeOfDay;
         _appTracker.UpdatePollingInterval();
         
+        // Save settings to persistence
+        _appTracker.SaveSettings();
+        
         MessageBox.Show("Settings saved successfully!", "Settings", 
             MessageBoxButtons.OK, MessageBoxIcon.Information);
         

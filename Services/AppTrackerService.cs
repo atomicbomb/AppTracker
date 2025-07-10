@@ -6,6 +6,7 @@ namespace AppTracker.Services;
 public class AppTrackerService
 {
     private readonly DatabaseService _databaseService;
+    private readonly SettingsService _settingsService;
     private readonly System.Timers.Timer _pollingTimer;
     private string _currentApplicationName = string.Empty;
     private string _currentWindowTitle = string.Empty;
@@ -24,9 +25,34 @@ public class AppTrackerService
     public AppTrackerService()
     {
         _databaseService = new DatabaseService();
+        _settingsService = new SettingsService();
         _pollingTimer = new System.Timers.Timer();
         _pollingTimer.Elapsed += OnPollingTimerElapsed;
+        
+        // Load settings from persistence
+        LoadSettings();
         UpdatePollingInterval();
+    }
+
+    private void LoadSettings()
+    {
+        var settings = _settingsService.LoadSettings();
+        PollingIntervalSeconds = settings.PollingIntervalSeconds;
+        IsTimeTrackingEnabled = settings.IsTimeTrackingEnabled;
+        StartTime = settings.StartTime;
+        EndTime = settings.EndTime;
+    }
+
+    public void SaveSettings()
+    {
+        var settings = new AppSettings
+        {
+            PollingIntervalSeconds = PollingIntervalSeconds,
+            IsTimeTrackingEnabled = IsTimeTrackingEnabled,
+            StartTime = StartTime,
+            EndTime = EndTime
+        };
+        _settingsService.SaveSettings(settings);
     }
 
     public void StartTracking()

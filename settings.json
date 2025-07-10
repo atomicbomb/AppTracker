@@ -1,0 +1,6 @@
+{
+  "PollingIntervalSeconds": 30,
+  "IsTimeTrackingEnabled": true,
+  "StartTime": "09:00:00",
+  "EndTime": "17:30:00"
+}

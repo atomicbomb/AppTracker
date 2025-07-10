@@ -171,6 +171,10 @@ public partial class MainForm : Form
     private void ExitApplication(object? sender, EventArgs e)
     {
         _appTracker.StopTracking();
+        
+        // Save settings before exiting
+        _appTracker.SaveSettings();
+        
         if (_notifyIcon != null)
             _notifyIcon.Visible = false;
         Application.Exit();
