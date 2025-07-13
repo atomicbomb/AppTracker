@@ -12,6 +12,7 @@ namespace AppTracker
         private Button btnClose;
         private Button btnPreviousDay;
         private Button btnNextDay;
+        private Button btnExportCsv;
         private ColumnHeader colApplication;
         private ColumnHeader colTime;
         private ColumnHeader colSessions;
@@ -48,6 +49,7 @@ namespace AppTracker
             btnClose = new Button();
             btnPreviousDay = new Button();
             btnNextDay = new Button();
+            btnExportCsv = new Button();
             SuspendLayout();
             // 
             // lblDate
@@ -124,7 +126,7 @@ namespace AppTracker
             // 
             // btnClose
             // 
-            btnClose.Location = new Point(254, 400);
+            btnClose.Location = new Point(340, 400);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(75, 30);
             btnClose.TabIndex = 5;
@@ -132,11 +134,22 @@ namespace AppTracker
             btnClose.UseVisualStyleBackColor = true;
             btnClose.Click += btnClose_Click;
             // 
+            // btnExportCsv
+            // 
+            btnExportCsv.Location = new Point(118, 400);
+            btnExportCsv.Name = "btnExportCsv";
+            btnExportCsv.Size = new Size(130, 30);
+            btnExportCsv.TabIndex = 6;
+            btnExportCsv.Text = "Export to CSV";
+            btnExportCsv.UseVisualStyleBackColor = true;
+            btnExportCsv.Click += btnExportCsv_Click;
+            // 
             // SummaryForm
             // 
             AutoScaleDimensions = new SizeF(7F, 15F);
             AutoScaleMode = AutoScaleMode.Font;
             ClientSize = new Size(584, 451);
+            Controls.Add(btnExportCsv);
             Controls.Add(btnClose);
             Controls.Add(btnNextDay);
             Controls.Add(btnPreviousDay);
